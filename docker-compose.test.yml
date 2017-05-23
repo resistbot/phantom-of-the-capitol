@@ -21,3 +21,6 @@ services:
       MYSQL_DATABASE: phantom_dc_test
       MYSQL_USER: phantom_dc
       MYSQL_PASSWORD: changeme
+  sut:
+    build: .
+    command: bundle exec rake spec
