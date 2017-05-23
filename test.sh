@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "Sleeping for containers to start..."
-sleep 30
+sleep 10
 
 echo "Running tests."
-bundle exec rake spec
+rake spec
