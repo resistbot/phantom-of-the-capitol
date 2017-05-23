@@ -3,7 +3,7 @@ set -e
 
 if ! rake ar:version 2>/dev/null; then
     echo "Loading schema..."
-    rake ar:schema:load > /dev/null
+    rake ar:schema:create ar:schema:load > /dev/null
 fi
 
 if [ "$(echo "$LOAD_CONGRESS" | tr '[:upper:]' '[:lower:]')" = "true" ]; then
