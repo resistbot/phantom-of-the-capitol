@@ -23,4 +23,4 @@ services:
       MYSQL_PASSWORD: changeme
   sut:
     build: .
-    command: bundle exec rake spec
+    command: run_tests.sh
