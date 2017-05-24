@@ -3,4 +3,4 @@
 
 sleep 30
 
-bundle exec rake spec
+bundle exec rspec spec
