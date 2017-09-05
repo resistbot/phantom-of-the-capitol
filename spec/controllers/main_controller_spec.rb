@@ -201,6 +201,19 @@ describe "Main controller" do
       expect(CampaignTag.last.name).to eq(@campaign_tag)
     end
 
+    it "should 403 Forbidden when #preprocess_message is defined and returns false" do
+      expect_any_instance_of(CongressForms::App).to receive(:preprocess_message){ false }
+
+      c = create :congress_member_with_actions
+      post_json @route, {
+        "bio_id" => c.bioguide_id,
+        "fields" => MOCK_VALUES,
+        "campaign_tag" => @campaign_tag
+      }.to_json
+
+      expect(last_response.status).to eq(403)
+    end
+
     describe "with a captcha" do
       before do
         c = create :congress_member_with_actions_and_captcha
@@ -288,7 +301,7 @@ describe "Main controller" do
       it "should issue a 302 redirect to a shield image with a 50% success rate" do
         get '/recent-fill-image/A010101'
         expect(last_response.status).to eq(302)
-        expect(last_response.headers['Location']).to eq(CongressMember::RECENT_FILL_IMAGE_BASE + 'success-50%-CCCC00' + CongressMember::RECENT_FILL_IMAGE_EXT)
+        expect(last_response.headers['Location']).to eq(CongressMember::RECENT_FILL_IMAGE_BASE + 'success-50%25-CCCC00' + CongressMember::RECENT_FILL_IMAGE_EXT)
       end
     end
 

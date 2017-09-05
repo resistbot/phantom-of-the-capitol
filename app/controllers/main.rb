@@ -8,6 +8,10 @@ CongressForms::App.controller do
   end
 
   before do
+    Raven.tags_context web: true
+  end
+
+  before do
     response.headers['X-Backend-Hostname'] = Socket.gethostname
   end
 
@@ -64,7 +68,7 @@ CongressForms::App.controller do
     fh[result[:uid]] = handler if result[:status] == "captcha_needed"
 
     if result[:status] == "error"
-      Raven.capture_message("Form error: #{bio_id}", tags: { "form_error" => "true" })
+      Raven.capture_message("Form error: #{bio_id}", tags: { "form_error" => true })
 
       job = c.delay(queue: "error_or_failure").fill_out_form(fields, params["campaign_tag"])
 
@@ -124,6 +128,10 @@ CongressForms::App.controller do
 
 
   before :'fill-out-form' do
+    if respond_to?(:preprocess_message) && preprocess_message(request, params["bio_id"], params["fields"]) == false
+      halt 403, {}, "Access Denied"
+    end
+
     if params["bio_id"] && (cm = CongressMember.bioguide(params["bio_id"]))
       if cwc_office_supported?(cm.cwc_office_code)
         status, headers, body = call env.merge("PATH_INFO" => "/cwc/#{cm.cwc_office_code}/messages")

@@ -1,13 +1,19 @@
-FROM ruby:2.2.0 
+FROM ruby:2.4-slim-stretch
 
 MAINTAINER William Budington "bill@eff.org"
 
 RUN apt-get update && \
   apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    default-libmysqlclient-dev \
+    libpq-dev \
+    git \
     libqt5webkit5-dev \
     qt5-default \
     xvfb \
-    lsof && \
+    lsof \
+    cron && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/* \
     /tmp/* \
